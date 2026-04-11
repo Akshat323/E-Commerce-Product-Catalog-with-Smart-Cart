@@ -34,13 +34,14 @@ const ProductCard = ({ product }) => {
     let stars = [];
     for (let i = 1; i <= 5; i++) {
       if (i <= full) {
-        stars.push(<span key={i} className="star">★</span>);
+        stars.push(<span key={i} className="star active">★</span>);
       } else if (i === full + 1 && hasHalf) {
-        stars.push(<span key={i} className="star">★</span>); // Assuming half star represented same in text for simplicity
+        stars.push(<span key={i} className="star active">★</span>);
       } else {
-        stars.push(<span key={i} className="star empty">★</span>);
+        stars.push(<span key={i} className="star">★</span>);
       }
     }
+
     return stars;
   };
 

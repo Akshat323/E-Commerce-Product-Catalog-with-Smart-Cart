@@ -35,8 +35,10 @@ const productController = {
       }
 
       if (minRating) {
-        filter.avg_rating = { $gte: parseFloat(minRating) };
+        const r = parseFloat(minRating);
+        filter.avg_rating = { $gte: r, $lt: r + 1 };
       }
+
 
       const skip = (parseInt(page) - 1) * parseInt(limit);
 

@@ -585,6 +585,22 @@ textarea.form-control {
   min-height: 150px;
 }
 
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  font-size: 1.2rem;
+  color: #ddd; /* Inactive star color */
+  line-height: 1;
+}
+
+.star.active {
+  color: var(--thalasi-black); /* Active star color */
+}
+
+
 .review-form label {
   display: block;
   font-size: 0.75rem;
@@ -840,21 +856,119 @@ td {
 .checkout-status-card {
   text-align: center;
   background: var(--thalasi-white);
-  border: 4px solid var(--thalasi-black);
-  padding: 5rem 2rem;
+  border: 2px solid var(--thalasi-black);
+  padding: 4rem 3rem;
   max-width: 600px;
   margin: 4rem auto;
+}
+
+.status-icon-wrapper {
+  margin-bottom: 2rem;
+}
+
+.status-icon-svg {
+  width: 60px;
+  height: 60px;
+  color: var(--thalasi-black);
 }
 
 .status-title {
   font-size: 2.2rem;
   font-weight: 900;
   text-transform: uppercase;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
-.status-details {
-  margin-bottom: 3rem;
+.status-subtitle {
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+.order-snapshot {
+  border: 1px solid var(--thalasi-black);
+  background: #fdfdfd;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.snapshot-header {
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1.2rem;
+  color: #888;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.snapshot-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.snapshot-item-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.snapshot-thumbnail {
+  width: 45px;
+  height: 45px;
+  border: 1px solid #eee;
+  background: var(--thalasi-white);
+  padding: 2px;
+}
+
+.snapshot-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.snapshot-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--thalasi-black);
+}
+
+.snapshot-price {
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.status-success-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-top: 2px solid var(--thalasi-black);
+  margin-top: 1rem;
+  text-transform: uppercase;
+}
+
+.total-label {
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.total-value {
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+
+.status-actions {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
 }
 
 .order-id-highlight {
@@ -992,5 +1106,48 @@ td {
   
   .footer-header {
     margin-bottom: 1.2rem;
+  }
+}
+
+/* ─── Legal & Info Pages ────────────────────────────────────────── */
+.legal-card {
+  background: var(--thalasi-white);
+  border: 4px solid var(--thalasi-black);
+  padding: 4rem;
+  max-width: 900px;
+  margin: 2rem auto 6rem;
+}
+
+.legal-content h3 {
+  font-size: 1.1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 3rem;
+  margin-bottom: 1.2rem;
+  border-left: 5px solid var(--thalasi-black);
+  padding-left: 15px;
+}
+
+.legal-content h3:first-child {
+  margin-top: 0;
+}
+
+.legal-content p {
+  color: #444;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+}
+
+.legal-content strong {
+  font-weight: 800;
+  color: var(--thalasi-black);
+}
+
+@media (max-width: 768px) {
+  .legal-card {
+    padding: 2rem;
+    border-width: 2px;
   }
 }

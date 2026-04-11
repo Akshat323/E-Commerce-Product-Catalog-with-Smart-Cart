@@ -248,7 +248,7 @@ const ProductDetail = () => {
                   <span className="review-username">{r.user_id}</span>
                   <span className="rating-stars">
                     {[...Array(5)].map((_, i) => (
-                      <span key={i} className={`star ${i < r.rating ? '' : 'empty'}`}>★</span>
+                      <span key={i} className={`star ${i < r.rating ? 'active' : ''}`}>★</span>
                     ))}
                   </span>
                 </div>
