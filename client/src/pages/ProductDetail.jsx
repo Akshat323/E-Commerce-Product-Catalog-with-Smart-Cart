@@ -204,7 +204,7 @@ const ProductDetail = () => {
               disabled={addingToCart || product.stock_quantity === 0}
               style={{ flex: 1 }}
             >
-              {addingToCart ? 'Adding...' : product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart 🛒'}
+              {addingToCart ? 'Adding...' : product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
             </button>
           </div>
         </div>
@@ -245,15 +245,15 @@ const ProductDetail = () => {
             reviews.map(r => (
               <div key={r._id} className="review-item">
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span style={{ fontWeight: '600', color: '#fff' }}>{r.user_id}</span>
+                  <span className="review-username">{r.user_id}</span>
                   <span className="rating-stars">
                     {[...Array(5)].map((_, i) => (
                       <span key={i} className={`star ${i < r.rating ? '' : 'empty'}`}>★</span>
                     ))}
                   </span>
                 </div>
-                <p style={{ color: 'var(--text-muted)', lineHeight: '1.5' }}>{r.comment}</p>
-                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginTop: '0.5rem' }}>
+                <p className="review-comment">{r.comment}</p>
+                <div className="review-date">
                   {new Date(r.createdAt).toLocaleDateString()}
                 </div>
               </div>

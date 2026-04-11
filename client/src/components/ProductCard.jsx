@@ -67,11 +67,11 @@ const ProductCard = ({ product }) => {
           {product.brand && <span className="product-card-brand">{product.brand}</span>}
         </div>
         <div className="product-card-footer">
-          <div className="rating-stars">
-            {renderStars(product.avg_rating || 0)}
-            <span className="rating-text">({product.review_count || 0})</span>
+          <div className="rating-row">
+            <span className="stars">{renderStars(product.avg_rating || 0)}</span>
+            <span className="rating-count">({product.review_count || 0})</span>
           </div>
-          <div className={`product-card-stock ${stockClass}`}>
+          <div className={`stock-row ${stockClass}`}>
             {stockText}
           </div>
         </div>

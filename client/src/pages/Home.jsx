@@ -5,7 +5,7 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [trending, setTrending] = useState([]);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
-  
+
   const [filters, setFilters] = useState({
     type: '',
     minPrice: '',
@@ -13,7 +13,7 @@ const Home = () => {
     rating: '',
     search: ''
   });
-  
+
   const [pagination, setPagination] = useState({ page: 1, limit: 8, totalPages: 1, totalResults: 0 });
   const [loading, setLoading] = useState(true);
 
@@ -25,7 +25,7 @@ const Home = () => {
     if (filters.maxPrice) url += `&maxPrice=${filters.maxPrice}`;
     if (filters.rating) url += `&minRating=${filters.rating}`;
     if (filters.search) url += `&search=${filters.search}`;
-    
+
     try {
       const res = await fetch(url);
       const data = await res.json();
@@ -77,7 +77,7 @@ const Home = () => {
       sessionId = 'sess_' + Math.random().toString(36).substr(2, 9);
       localStorage.setItem('sessionId', sessionId);
     }
-    
+
     fetchProducts();
     loadTrending();
     loadRecentlyViewed();
@@ -103,16 +103,33 @@ const Home = () => {
 
   return (
     <main className="main-content">
-      <section className="hero-banner">
-        <h1 className="hero-title">Discover Premium Products</h1>
-        <p className="hero-subtitle">Browse our curated catalog of electronics, books, and clothing — powered by React, MongoDB & Redis.</p>
+      <section className="hero">
+        <span className="badge">🔥 UP TO 15% OFF</span>
+        <h1 className="hero-title">Top Deals This Week</h1>
+        <p className="hero-subtitle">
+          Save big on electronics, books, and more — limited time only.
+        </p>
+        <div className="hero-buttons">
+          <button className="filter-btn filter-btn-primary" onClick={() => document.getElementById('products-section').scrollIntoView({ behavior: 'smooth' })}>
+            Shop Now
+          </button>
+          <button className="filter-btn filter-btn-secondary" onClick={() => document.getElementById('products-section').scrollIntoView({ behavior: 'smooth' })}>
+            View Products
+          </button>
+        </div>
+      </section>
+
+      <section className="features">
+        <div className="feature-item">🚚 Fast Delivery</div>
+        <div className="feature-item">🔒 Secure Payment</div>
+        <div className="feature-item">⭐ Premium Quality</div>
       </section>
 
       {trending.length > 0 && (
         <section className="horizontal-scroll-section">
           <div className="section-header">
             <div>
-              <h2 className="section-title">🔥 Trending Now</h2>
+              <h2 className="section-title">Trending Now</h2>
               <p className="section-subtitle">Most viewed products this hour</p>
             </div>
           </div>
@@ -126,7 +143,7 @@ const Home = () => {
         <section className="horizontal-scroll-section">
           <div className="section-header">
             <div>
-              <h2 className="section-title">👁️ Recently Viewed</h2>
+              <h2 className="section-title">Recently Viewed</h2>
               <p className="section-subtitle">Continue where you left off</p>
             </div>
           </div>
@@ -165,13 +182,13 @@ const Home = () => {
         </div>
         <div className="filter-group" style={{ flexGrow: 1, maxWidth: '400px' }}>
           <span className="filter-label">Search Products</span>
-          <input 
-            type="text" 
-            className="filter-input" 
-            name="search" 
-            placeholder="Keywords (e.g. MacBook, Nike...)" 
-            value={filters.search} 
-            onChange={handleFilterChange} 
+          <input
+            type="text"
+            className="filter-input"
+            name="search"
+            placeholder="Keywords (e.g. MacBook, Nike...)"
+            value={filters.search}
+            onChange={handleFilterChange}
             style={{ width: '100%' }}
           />
         </div>
@@ -183,10 +200,10 @@ const Home = () => {
 
       <section id="products-section">
         <div className="section-header">
-          <h2 className="section-title">📦 All Products</h2>
+          <h2 className="section-title">All Products</h2>
           <span className="section-subtitle">{pagination.totalResults} products found</span>
         </div>
-        
+
         {loading ? (
           <div className="loading-spinner"><div className="spinner"></div></div>
         ) : (
@@ -197,15 +214,15 @@ const Home = () => {
 
         {pagination.totalPages > 1 && (
           <div className="pagination">
-             {[...Array(pagination.totalPages)].map((_, i) => (
-                <button 
-                  key={i} 
-                  className={`pagination-btn ${pagination.page === i + 1 ? 'active' : ''}`}
-                  onClick={() => fetchProducts(i + 1)}
-                >
-                  {i + 1}
-                </button>
-             ))}
+            {[...Array(pagination.totalPages)].map((_, i) => (
+              <button
+                key={i}
+                className={`pagination-btn ${pagination.page === i + 1 ? 'active' : ''}`}
+                onClick={() => fetchProducts(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
           </div>
         )}
       </section>

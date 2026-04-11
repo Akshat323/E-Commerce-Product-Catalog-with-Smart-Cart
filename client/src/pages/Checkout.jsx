@@ -60,41 +60,41 @@ const Checkout = () => {
   if (orderResult) {
     if (orderResult.success) {
       return (
-        <main className="main-content" style={{ marginTop: '4rem' }}>
-          <div style={{ textAlign: 'center', background: 'var(--glass-bg)', padding: '3rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--glass-border)' }}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🎉</div>
-            <h2 style={{ marginBottom: '1rem' }}>Order Placed Successfully!</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Thank you for your purchase.</p>
-            <p style={{ marginTop: '1rem' }}>Order ID: <strong style={{ color: 'var(--accent-primary)' }}>{orderResult.data.order_id}</strong></p>
-            <p>Total: <strong>₹{orderResult.data.total_amount.toFixed(2)}</strong></p>
-            
-            <Link to="/" className="filter-btn filter-btn-primary" style={{ display: 'inline-block', marginTop: '2rem' }}>
-              ← Continue Shopping
+        <main className="main-content">
+          <div className="checkout-status-card success">
+            <h2 className="status-title">Order Placed Successfully</h2>
+            <div className="status-details">
+              <p>Thank you for your purchase.</p>
+              <div className="order-id-highlight">
+                Order ID: <span>{orderResult.data.order_id}</span>
+              </div>
+              <p className="status-total">Total: ₹{orderResult.data.total_amount.toFixed(2)}</p>
+            </div>
+            <Link to="/" className="filter-btn filter-btn-primary">
+              Continue Shopping
             </Link>
           </div>
         </main>
       );
     } else {
       return (
-        <main className="main-content" style={{ marginTop: '4rem' }}>
-          <div style={{ textAlign: 'center', background: 'var(--glass-bg)', padding: '3rem', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚠️</div>
-            <h2 style={{ marginBottom: '1rem', color: '#ef4444' }}>Order Failed</h2>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>{orderResult.message}</p>
+        <main className="main-content">
+          <div className="checkout-status-card error">
+            <h2 className="status-title">Order Failed</h2>
+            <p className="status-message">{orderResult.message}</p>
             
             {orderResult.outOfStock && orderResult.outOfStock.length > 0 && (
-              <div style={{ textAlign: 'left', background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem', display: 'inline-block' }}>
-                <h3 style={{ color: '#ef4444', marginBottom: '1rem', fontSize: '1.1rem' }}>Stock Issues</h3>
+              <div className="stock-error-list">
+                <h3 className="stock-error-heading">Stock Issues</h3>
                 {orderResult.outOfStock.map((item, idx) => (
-                  <div key={idx} style={{ marginBottom: '0.5rem' }}>
+                  <div key={idx} className="stock-error-item">
                     <strong>{item.name}</strong>: Requested {item.requested}, Available {item.available}
                   </div>
                 ))}
               </div>
             )}
-            <br />
-            <Link to="/cart" className="filter-btn filter-btn-secondary" style={{ display: 'inline-block' }}>
-              ← Back to Cart
+            <Link to="/cart" className="filter-btn filter-btn-secondary">
+              Back to Cart
             </Link>
           </div>
         </main>
@@ -104,10 +104,9 @@ const Checkout = () => {
 
   if (!cart || !cart.items || cart.items.length === 0) {
     return (
-      <main className="main-content" style={{ marginTop: '4rem' }}>
+      <main className="main-content">
         <div className="empty-state">
-          <div className="icon">🛒</div>
-          <h2 style={{ marginBottom: '1rem' }}>Nothing to checkout</h2>
+          <h2 className="status-title">Nothing to checkout</h2>
           <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Your cart is empty</p>
           <Link to="/" className="filter-btn filter-btn-primary">Continue Shopping</Link>
         </div>
@@ -120,33 +119,35 @@ const Checkout = () => {
   return (
     <main className="main-content">
       <div className="section-header">
-        <h1 className="section-title">🔒 Checkout</h1>
+        <h1 className="section-title">Checkout</h1>
       </div>
 
-      <div style={{ background: 'var(--glass-bg)', backdropFilter: 'var(--glass-blur)', border: '1px solid var(--glass-border)', padding: '2rem', borderRadius: 'var(--radius-lg)', maxWidth: '600px', margin: '0 auto' }}>
-        <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem', color: 'var(--text-main)' }}>Order Summary</h3>
+      <div className="checkout-summary-card">
+        <h3 className="summary-title">Order Summary</h3>
         
-        {cart.items.map(item => (
-          <div key={item.product_id} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-            <span>{item.name} <span style={{ color: 'var(--text-muted)' }}>× {item.quantity}</span></span>
-            <span style={{ fontWeight: 600 }}>₹{item.subtotal.toFixed(2)}</span>
-          </div>
-        ))}
+        <div className="checkout-items-list">
+          {cart.items.map(item => (
+            <div key={item.product_id} className="checkout-item-row">
+              <span className="item-name">{item.name} <span className="item-qty">× {item.quantity}</span></span>
+              <span className="item-price">₹{item.subtotal.toFixed(2)}</span>
+            </div>
+          ))}
+        </div>
         
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', paddingTop: '1rem', borderTop: '2px solid rgba(255,255,255,0.1)', fontSize: '1.2rem', fontWeight: 700 }}>
+        <div className="checkout-total-row">
           <span>Total ({cart.items.length} items)</span>
-          <span style={{ color: 'var(--accent-primary)' }}>₹{total.toFixed(2)}</span>
+          <span className="total-amount">₹{total.toFixed(2)}</span>
         </div>
 
         <button 
           className="btn-checkout" 
           onClick={handlePlaceOrder} 
           disabled={processing}
-          style={{ width: '100%', marginTop: '2rem' }}
+          style={{ width: '100%', marginTop: '2.5rem' }}
         >
-          {processing ? 'Processing...' : `Place Order — ₹${total.toFixed(2)}`}
+          {processing ? 'Processing...' : `Place Order`}
         </button>
-        <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '1rem' }}>
+        <p className="checkout-notice">
           By placing this order, stock will be validated and your cart will be cleared.
         </p>
       </div>

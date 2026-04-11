@@ -70,18 +70,20 @@ const cartController = {
         _id: { $in: productIds }
       }).lean();
 
-      const items = products.map(product => ({
-        product_id: product._id,
-        name: product.name,
-        price: product.price,
-        type: product.type,
-        brand: product.brand,
-        category: product.category,
-        stock_quantity: product.stock_quantity,
-        image_url: product.image_url,
-        quantity: parseInt(cart[product._id.toString()]),
-        subtotal: product.price * parseInt(cart[product._id.toString()])
-      }));
+      const items = products
+        .map(product => ({
+          product_id: product._id,
+          name: product.name,
+          price: product.price,
+          type: product.type,
+          brand: product.brand,
+          category: product.category,
+          stock_quantity: product.stock_quantity,
+          image_url: product.image_url,
+          quantity: parseInt(cart[product._id.toString()]),
+          subtotal: product.price * parseInt(cart[product._id.toString()])
+        }))
+        .filter(item => item.quantity > 0);
 
       const total = items.reduce((sum, item) => sum + item.subtotal, 0);
       const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -117,15 +119,11 @@ const cartController = {
       }
 
       if (decrementBy) {
-        // Get current quantity and decrement
-        const cart = await cartService.getCart(userId);
-        const currentQty = parseInt(cart[productId]) || 0;
-        const newQty = currentQty - parseInt(decrementBy);
-
-        const result = await cartService.updateQuantity(userId, productId, newQty);
+        // Atomic subtraction via addToCart with negative quantity
+        const result = await cartService.addToCart(userId, productId, -parseInt(decrementBy));
         return res.json({
           success: true,
-          message: newQty <= 0 ? 'Item removed from cart' : 'Quantity updated',
+          message: result.removed ? 'Item removed from cart' : 'Quantity updated',
           data: result
         });
       }
