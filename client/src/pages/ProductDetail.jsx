@@ -15,7 +15,7 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         let sessionId = localStorage.getItem('sessionId');
-        const res = await fetch(`/api/products/${id}?sessionId=${sessionId}`);
+        const res = await fetch(`/api/products/${id}?userId=${sessionId}`);
         const data = await res.json();
         if (res.ok) {
           setProduct(data.data);
@@ -27,7 +27,7 @@ const ProductDetail = () => {
 
     const fetchReviews = async () => {
       try {
-        const res = await fetch(`/api/products/${id}/reviews`);
+        const res = await fetch(`/api/reviews/${id}`);
         const data = await res.json();
         if (res.ok) {
           setReviews(data.data);
@@ -45,7 +45,7 @@ const ProductDetail = () => {
     setAddingToCart(true);
     try {
       const payload = {
-        sessionId: localStorage.getItem('sessionId'),
+        userId: localStorage.getItem('sessionId'),
         productId: product._id,
         quantity: qty
       };
@@ -62,7 +62,7 @@ const ProductDetail = () => {
         alert('Added to cart!');
       } else {
         const data = await res.json();
-        alert(data.error || 'Failed to add to cart');
+        alert(data.message || 'Failed to add to cart');
       }
     } catch (err) {
       console.error(err);
@@ -75,11 +75,13 @@ const ProductDetail = () => {
     e.preventDefault();
     try {
       const payload = {
-        ...reviewForm,
-        user: `User-${Math.floor(Math.random() * 1000)}` 
+        product_id: id,
+        user_id: `User-${Math.floor(Math.random() * 1000)}`,
+        rating: reviewForm.rating,
+        comment: reviewForm.comment
       };
       
-      const res = await fetch(`/api/products/${id}/reviews`, {
+      const res = await fetch(`/api/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -111,11 +113,59 @@ const ProductDetail = () => {
           <div className="product-detail-price">${product.price.toFixed(2)}</div>
           
           <div className="product-specs">
-            {Object.entries(product.attributes || {}).map(([key, val]) => (
-              <p key={key} style={{ marginBottom: '8px' }}>
-                <strong style={{ textTransform: 'capitalize', color: 'var(--text-muted)' }}>{key}:</strong> {val}
+            {product.description && (
+              <p style={{ marginBottom: '12px', color: 'var(--text-muted)', lineHeight: '1.6' }}>{product.description}</p>
+            )}
+            {product.brand && (
+              <p style={{ marginBottom: '8px' }}>
+                <strong style={{ color: 'var(--text-muted)' }}>Brand:</strong> {product.brand}
               </p>
-            ))}
+            )}
+            {product.category && (
+              <p style={{ marginBottom: '8px' }}>
+                <strong style={{ color: 'var(--text-muted)' }}>Category:</strong> {product.category}
+              </p>
+            )}
+            {/* Book-specific fields */}
+            {product.author && (
+              <p style={{ marginBottom: '8px' }}>
+                <strong style={{ color: 'var(--text-muted)' }}>Author:</strong> {product.author}
+              </p>
+            )}
+            {product.isbn && (
+              <p style={{ marginBottom: '8px' }}>
+                <strong style={{ color: 'var(--text-muted)' }}>ISBN:</strong> {product.isbn}
+              </p>
+            )}
+            {product.pages && (
+              <p style={{ marginBottom: '8px' }}>
+                <strong style={{ color: 'var(--text-muted)' }}>Pages:</strong> {product.pages}
+              </p>
+            )}
+            {product.publisher && (
+              <p style={{ marginBottom: '8px' }}>
+                <strong style={{ color: 'var(--text-muted)' }}>Publisher:</strong> {product.publisher}
+              </p>
+            )}
+            {/* Clothing-specific fields */}
+            {product.size && product.size.length > 0 && (
+              <p style={{ marginBottom: '8px' }}>
+                <strong style={{ color: 'var(--text-muted)' }}>Sizes:</strong> {product.size.join(', ')}
+              </p>
+            )}
+            {product.color && product.color.length > 0 && (
+              <p style={{ marginBottom: '8px' }}>
+                <strong style={{ color: 'var(--text-muted)' }}>Colors:</strong> {product.color.join(', ')}
+              </p>
+            )}
+            {product.material && (
+              <p style={{ marginBottom: '8px' }}>
+                <strong style={{ color: 'var(--text-muted)' }}>Material:</strong> {product.material}
+              </p>
+            )}
+            <p style={{ marginBottom: '8px' }}>
+              <strong style={{ color: 'var(--text-muted)' }}>In Stock:</strong> {product.stock_quantity}
+            </p>
           </div>
           
           <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
@@ -127,17 +177,17 @@ const ProductDetail = () => {
               <input type="text" className="qty-value" value={qty} readOnly />
               <button 
                 className="qty-btn" 
-                onClick={() => setQty(Math.min(product.stockCount, qty + 1))}
-                disabled={qty >= product.stockCount}
+                onClick={() => setQty(Math.min(product.stock_quantity, qty + 1))}
+                disabled={qty >= product.stock_quantity}
               >+</button>
             </div>
             <button 
               className="btn-add-cart" 
               onClick={handleAddToCart}
-              disabled={addingToCart || product.stockCount === 0}
+              disabled={addingToCart || product.stock_quantity === 0}
               style={{ flex: 1 }}
             >
-              {addingToCart ? 'Adding...' : product.stockCount === 0 ? 'Out of Stock' : 'Add to Cart 🛒'}
+              {addingToCart ? 'Adding...' : product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart 🛒'}
             </button>
           </div>
         </div>
@@ -178,7 +228,7 @@ const ProductDetail = () => {
             reviews.map(r => (
               <div key={r._id} className="review-item">
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span style={{ fontWeight: '600', color: '#fff' }}>{r.user}</span>
+                  <span style={{ fontWeight: '600', color: '#fff' }}>{r.user_id}</span>
                   <span className="rating-stars">
                     {[...Array(5)].map((_, i) => (
                       <span key={i} className={`star ${i < r.rating ? '' : 'empty'}`}>★</span>

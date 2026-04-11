@@ -20,8 +20,8 @@ const Checkout = () => {
         const res = await fetch(`/api/cart/${sessionId}`);
         const data = await res.json();
         
-        if (res.ok) {
-          setCart(data.cart);
+        if (res.ok && data.success) {
+          setCart(data.data);
         }
       } catch (err) {
         console.error(err);
@@ -115,7 +115,7 @@ const Checkout = () => {
     );
   }
 
-  const total = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const total = cart.total;
 
   return (
     <main className="main-content">
@@ -127,9 +127,9 @@ const Checkout = () => {
         <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem', color: 'var(--text-main)' }}>Order Summary</h3>
         
         {cart.items.map(item => (
-          <div key={item.product._id} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-            <span>{item.product.name} <span style={{ color: 'var(--text-muted)' }}>× {item.quantity}</span></span>
-            <span style={{ fontWeight: 600 }}>${(item.price * item.quantity).toFixed(2)}</span>
+          <div key={item.product_id} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+            <span>{item.name} <span style={{ color: 'var(--text-muted)' }}>× {item.quantity}</span></span>
+            <span style={{ fontWeight: 600 }}>${item.subtotal.toFixed(2)}</span>
           </div>
         ))}
         

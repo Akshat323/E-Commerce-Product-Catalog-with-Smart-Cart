@@ -17,9 +17,8 @@ function App() {
       }
       const res = await fetch(`/api/cart/${sessionId}`);
       const data = await res.json();
-      if (res.ok && data.cart && data.cart.items) {
-        const count = data.cart.items.reduce((acc, item) => acc + item.quantity, 0);
-        setCartCount(count);
+      if (res.ok && data.success && data.data && data.data.items) {
+        setCartCount(data.data.itemCount || 0);
       } else {
         setCartCount(0);
       }

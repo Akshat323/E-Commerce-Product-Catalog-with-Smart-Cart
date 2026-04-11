@@ -1,6 +1,6 @@
-# ⚡ NovaMart — Smart Product Catalog & Cart
+# ⚡ Martify — Smart Product Catalog & Cart
 
-NovaMart is a full-stack, highly responsive e-commerce web application designed to demonstrate the power of **NoSQL databases**. It utilizes **MongoDB** for robust, polymorphic persistent data storage and **Redis** for an ultra-fast, ephemeral caching and session management layer.
+Martify is a full-stack, highly responsive e-commerce web application designed to demonstrate the power of **NoSQL databases**. It utilizes **MongoDB** for robust, polymorphic persistent data storage and **Redis** for an ultra-fast, ephemeral caching and session management layer.
 
 ## 🌟 Key Features
 
@@ -21,7 +21,7 @@ NovaMart is a full-stack, highly responsive e-commerce web application designed 
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Vanilla HTML5, CSS3 (Glassmorphism), JavaScript
+- **Frontend**: React (Vite), CSS3 (Glassmorphism), React Router
 - **Backend Environment**: Node.js & Express.js
 - **Primary Database**: MongoDB & Mongoose
 - **Caching & Ephemeral DB**: Redis
@@ -31,7 +31,15 @@ NovaMart is a full-stack, highly responsive e-commerce web application designed 
 
 ## 📂 Project Structure
 
-```text
+├── client/                  # React Frontend (Vite)
+│   ├── src/
+│   │   ├── App.jsx          # Router & Layout
+│   │   ├── main.jsx         # React entry point
+│   │   ├── index.css        # Glassmorphism Design CSS
+│   │   ├── components/      # Reusable React components
+│   │   └── pages/           # Page components (Home, ProductDetail, Cart, Checkout)
+│   ├── vite.config.js       # Vite config with API proxy
+│   └── package.json         # Frontend dependencies
 ├── config/
 │   ├── db.js                # MongoDB connection setup
 │   └── redis.js             # Redis connection setup
@@ -40,10 +48,6 @@ NovaMart is a full-stack, highly responsive e-commerce web application designed 
 │   ├── Product.js           # Mongoose polymorphic product schema
 │   ├── Order.js             # Basic order schema for checkout
 │   └── Review.js            # Review schema and aggregation hooks
-├── public/                  # Frontend files
-│   ├── css/style.css        # Glassmorphism Design CSS
-│   ├── js/                  # Frontend JS (app.js, cart.js, product.js, checkout.js)
-│   └── *.html               # Storefront HTML views
 ├── redis/                   # Redis Ephemeral logic
 │   ├── cartService.js       # Redis hash map logic for cart items
 │   ├── recentlyViewedService.js # Redis list logic for history
@@ -51,7 +55,7 @@ NovaMart is a full-stack, highly responsive e-commerce web application designed 
 │   └── viewService.js       # Redis HyperLogLog for unique views
 ├── routes/                  # Express REST API Routes
 ├── server.js                # Main application entry point
-└── package.json             # Dependencies
+└── package.json             # Backend dependencies
 ```
 
 ---
