@@ -112,7 +112,7 @@ const Cart = () => {
                     </div>
                   </div>
                 </td>
-                <td style={{ fontWeight: 600 }}>${item.price.toFixed(2)}</td>
+                <td style={{ fontWeight: 600 }}>₹{item.price.toFixed(2)}</td>
                 <td>
                   <div className="qty-selector">
                     <button className="qty-btn" onClick={() => handleUpdateQty(item.product_id, -1)}>-</button>
@@ -120,7 +120,7 @@ const Cart = () => {
                     <button className="qty-btn" onClick={() => handleUpdateQty(item.product_id, 1)}>+</button>
                   </div>
                 </td>
-                <td style={{ fontWeight: 800, color: 'var(--accent-primary)' }}>${item.subtotal.toFixed(2)}</td>
+                <td style={{ fontWeight: 800, color: 'var(--accent-primary)' }}>₹{item.subtotal.toFixed(2)}</td>
                 <td>
                   <button onClick={() => handleRemove(item.product_id)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontWeight: 600 }}>
                     Remove
@@ -136,7 +136,7 @@ const Cart = () => {
         <h3 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Order Summary</h3>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', color: 'var(--text-muted)' }}>
           <span>Subtotal ({cart.itemCount} items)</span>
-          <span>${cart.total.toFixed(2)}</span>
+          <span>₹{cart.total.toFixed(2)}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
           <span>Shipping</span>
@@ -145,7 +145,7 @@ const Cart = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '1.5rem', borderTop: '1px solid var(--glass-border)', fontSize: '1.5rem', fontWeight: 800 }}>
           <span>Total</span>
           <span style={{ background: 'linear-gradient(to right, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            ${cart.total.toFixed(2)}
+            ₹{cart.total.toFixed(2)}
           </span>
         </div>
         <button className="btn-checkout" style={{ width: '100%' }} onClick={() => navigate('/checkout')}>
