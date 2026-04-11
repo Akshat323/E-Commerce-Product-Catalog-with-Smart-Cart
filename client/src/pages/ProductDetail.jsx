@@ -110,7 +110,7 @@ const ProductDetail = () => {
         <div className="product-detail-info">
           <span className="product-detail-type">{product.type}</span>
           <h1 className="product-detail-name">{product.name}</h1>
-          <div className="product-detail-price">${product.price.toFixed(2)}</div>
+          <div className="product-detail-price">₹{product.price.toFixed(2)}</div>
           
           <div className="product-specs">
             {product.description && (

@@ -66,7 +66,7 @@ const Checkout = () => {
             <h2 style={{ marginBottom: '1rem' }}>Order Placed Successfully!</h2>
             <p style={{ color: 'var(--text-muted)' }}>Thank you for your purchase.</p>
             <p style={{ marginTop: '1rem' }}>Order ID: <strong style={{ color: 'var(--accent-primary)' }}>{orderResult.data.order_id}</strong></p>
-            <p>Total: <strong>${orderResult.data.total_amount.toFixed(2)}</strong></p>
+            <p>Total: <strong>₹{orderResult.data.total_amount.toFixed(2)}</strong></p>
             
             <Link to="/" className="filter-btn filter-btn-primary" style={{ display: 'inline-block', marginTop: '2rem' }}>
               ← Continue Shopping
@@ -129,13 +129,13 @@ const Checkout = () => {
         {cart.items.map(item => (
           <div key={item.product_id} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
             <span>{item.name} <span style={{ color: 'var(--text-muted)' }}>× {item.quantity}</span></span>
-            <span style={{ fontWeight: 600 }}>${item.subtotal.toFixed(2)}</span>
+            <span style={{ fontWeight: 600 }}>₹{item.subtotal.toFixed(2)}</span>
           </div>
         ))}
         
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', paddingTop: '1rem', borderTop: '2px solid rgba(255,255,255,0.1)', fontSize: '1.2rem', fontWeight: 700 }}>
           <span>Total ({cart.items.length} items)</span>
-          <span style={{ color: 'var(--accent-primary)' }}>${total.toFixed(2)}</span>
+          <span style={{ color: 'var(--accent-primary)' }}>₹{total.toFixed(2)}</span>
         </div>
 
         <button 
@@ -144,7 +144,7 @@ const Checkout = () => {
           disabled={processing}
           style={{ width: '100%', marginTop: '2rem' }}
         >
-          {processing ? 'Processing...' : `Place Order — $${total.toFixed(2)}`}
+          {processing ? 'Processing...' : `Place Order — ₹${total.toFixed(2)}`}
         </button>
         <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '1rem' }}>
           By placing this order, stock will be validated and your cart will be cleared.

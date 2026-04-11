@@ -48,7 +48,7 @@ const ProductCard = ({ product }) => {
         <div className="product-card-category">{product.brand || 'Generic'}</div>
         <h3 className="product-card-name">{product.name}</h3>
         <div className="product-card-meta">
-          <span className="product-card-price">${product.price.toFixed(2)}</span>
+          <span className="product-card-price">₹{product.price.toFixed(2)}</span>
           {product.brand && <span className="product-card-brand">{product.brand}</span>}
         </div>
         <div className="product-card-footer">
