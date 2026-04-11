@@ -8,18 +8,18 @@ const getCategoryIcon = (category) => {
 };
 
 const ProductCard = ({ product }) => {
-  const isOutOfStock = product.stockCount === 0;
-  const isLowStock = product.stockCount > 0 && product.stockCount <= 5;
+  const isOutOfStock = product.stock_quantity === 0;
+  const isLowStock = product.stock_quantity > 0 && product.stock_quantity <= 5;
   
   let stockClass = 'in';
-  let stockText = `${product.stockCount} in stock`;
+  let stockText = `${product.stock_quantity} in stock`;
   
   if (isOutOfStock) {
     stockClass = 'out';
     stockText = 'Out of Stock';
   } else if (isLowStock) {
     stockClass = 'low';
-    stockText = `Only ${product.stockCount} left`;
+    stockText = `Only ${product.stock_quantity} left`;
   }
 
   const renderStars = (rating) => {
@@ -53,8 +53,8 @@ const ProductCard = ({ product }) => {
         </div>
         <div className="product-card-footer">
           <div className="rating-stars">
-            {renderStars(product.calcAverageRating || 0)}
-            <span className="rating-text">({product.calcTotalReviews || 0})</span>
+            {renderStars(product.avg_rating || 0)}
+            <span className="rating-text">({product.review_count || 0})</span>
           </div>
           <div className={`product-card-stock ${stockClass}`}>
             {stockText}

@@ -22,18 +22,18 @@ const Home = () => {
     if (filters.type) url += `&type=${filters.type}`;
     if (filters.minPrice) url += `&minPrice=${filters.minPrice}`;
     if (filters.maxPrice) url += `&maxPrice=${filters.maxPrice}`;
-    if (filters.rating) url += `&rating=${filters.rating}`;
+    if (filters.rating) url += `&minRating=${filters.rating}`;
     
     try {
       const res = await fetch(url);
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data.success) {
         setProducts(data.data);
         setPagination({
-          page: data.page,
-          limit: data.limit,
-          totalPages: data.totalPages,
-          totalResults: data.totalResults
+          page: data.pagination.page,
+          limit: data.pagination.limit,
+          totalPages: data.pagination.pages,
+          totalResults: data.pagination.total
         });
       }
     } catch (err) {
