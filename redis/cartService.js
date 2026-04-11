@@ -9,9 +9,15 @@ const cartService = {
    */
   async addToCart(userId, productId, quantity) {
     const key = `cart:${userId}`;
-    const currentQty = await redis.hget(key, productId);
-    const newQty = (parseInt(currentQty) || 0) + quantity;
-    await redis.hset(key, productId, newQty);
+    
+    // Atomic increment/decrement
+    const newQty = await redis.hincrby(key, productId, quantity);
+    
+    if (newQty <= 0) {
+      await redis.hdel(key, productId);
+      return { productId, quantity: 0, removed: true };
+    }
+
     await redis.expire(key, CART_TTL);
     return { productId, quantity: newQty };
   },

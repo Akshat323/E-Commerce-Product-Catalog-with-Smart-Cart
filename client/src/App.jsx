@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import Footer from './components/Footer';
 
 function App() {
   const [cartCount, setCartCount] = useState(0);
@@ -39,18 +40,13 @@ function App() {
     <Router>
       <nav className="navbar" id="navbar">
         <div className="navbar-inner">
-          <Link to="/" className="navbar-brand">
-            <div className="logo-icon">⚡</div>
-            Martify
-          </Link>
-          <ul className="navbar-nav">
-            <li><Link to="/" className="nav-link">🏠 Home</Link></li>
-            <li>
-              <Link to="/cart" className="nav-link">
-                🛒 Cart <span className="cart-badge">{cartCount}</span>
-              </Link>
-            </li>
-          </ul>
+          <Link to="/" className="logo">Martify</Link>
+          <div className="nav-links">
+            <Link to="/">Home</Link>
+            <Link to="/cart">
+              Cart {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -60,6 +56,8 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
       </Routes>
+
+      <Footer />
     </Router>
   );
 }

@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+const getProductImage = (name) => {
+  const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  return `/products/${slug}.jpg`;
+};
+
 const Cart = () => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -70,10 +75,9 @@ const Cart = () => {
 
   if (!cart || !cart.items || cart.items.length === 0) {
     return (
-      <main className="main-content" style={{ marginTop: '4rem' }}>
+      <main className="main-content">
         <div className="empty-state">
-          <div className="icon">🛒</div>
-          <h2 style={{ marginBottom: '1rem' }}>Your cart is empty</h2>
+          <h2 className="status-title">Your cart is empty</h2>
           <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Looks like you haven't added anything to your cart yet.</p>
           <Link to="/" className="filter-btn filter-btn-primary">Browse Products</Link>
         </div>
@@ -84,10 +88,10 @@ const Cart = () => {
   return (
     <main className="main-content">
       <div className="section-header">
-        <h1 className="section-title">🛒 Your Cart</h1>
+        <h1 className="section-title">Your Cart</h1>
       </div>
 
-      <div style={{ overflowX: 'auto', background: 'var(--glass-bg)', backdropFilter: 'var(--glass-blur)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)' }}>
+      <div className="cart-table-wrapper">
         <table>
           <thead>
             <tr>
@@ -102,25 +106,36 @@ const Cart = () => {
             {cart.items.map(item => (
               <tr key={item.product_id}>
                 <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <div style={{ background: 'rgba(0,0,0,0.2)', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-sm)', fontSize: '2rem' }}>
-                       {item.type === 'Electronics' ? '💻' : item.type === 'Book' ? '📚' : '👕'}
+                  <div className="cart-product-cell">
+                    <div className="cart-product-image">
+                       <img 
+                        src={getProductImage(item.name)} 
+                        alt={item.name}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }}
+                      />
+                      <span style={{ display: 'none' }}>📦</span>
                     </div>
                     <div>
-                      <h4 style={{ margin: 0, fontSize: '1.1rem' }}>{item.name}</h4>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{item.brand || 'Generic'}</span>
+                      <h4 className="cart-product-name">{item.name}</h4>
+                      <span className="cart-product-brand">{item.brand || 'Generic'}</span>
                     </div>
                   </div>
                 </td>
                 <td style={{ fontWeight: 600 }}>₹{item.price.toFixed(2)}</td>
                 <td>
                   <div className="qty-selector">
-                    <button className="qty-btn" onClick={() => handleUpdateQty(item.product_id, -1)}>-</button>
+                    <button 
+                      className="qty-btn" 
+                      onClick={() => item.quantity > 1 ? handleUpdateQty(item.product_id, -1) : handleRemove(item.product_id)}
+                    >-</button>
                     <input type="text" className="qty-value" value={item.quantity} readOnly />
                     <button className="qty-btn" onClick={() => handleUpdateQty(item.product_id, 1)}>+</button>
                   </div>
                 </td>
-                <td style={{ fontWeight: 800, color: 'var(--accent-primary)' }}>₹{item.subtotal.toFixed(2)}</td>
+                <td className="cart-item-total">₹{item.subtotal.toFixed(2)}</td>
                 <td>
                   <button onClick={() => handleRemove(item.product_id)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontWeight: 600 }}>
                     Remove
@@ -132,25 +147,25 @@ const Cart = () => {
         </table>
       </div>
 
-      <div className="cart-summary" style={{ marginTop: '2rem', maxWidth: '400px', marginLeft: 'auto' }}>
-        <h3 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Order Summary</h3>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', color: 'var(--text-muted)' }}>
-          <span>Subtotal ({cart.itemCount} items)</span>
-          <span>₹{cart.total.toFixed(2)}</span>
+      <div className="cart-summary-wrapper">
+        <div className="cart-summary">
+          <h3 className="summary-title">Order Summary</h3>
+          <div className="summary-row">
+            <span>Subtotal ({cart.itemCount} items)</span>
+            <span>₹{cart.total.toFixed(2)}</span>
+          </div>
+          <div className="summary-row">
+            <span>Shipping</span>
+            <span>Free</span>
+          </div>
+          <div className="summary-total">
+            <span>Total</span>
+            <span>₹{cart.total.toFixed(2)}</span>
+          </div>
+          <button className="btn-checkout" onClick={() => navigate('/checkout')}>
+            Proceed to Checkout
+          </button>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
-          <span>Shipping</span>
-          <span>Free</span>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '1.5rem', borderTop: '1px solid var(--glass-border)', fontSize: '1.5rem', fontWeight: 800 }}>
-          <span>Total</span>
-          <span style={{ background: 'linear-gradient(to right, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            ₹{cart.total.toFixed(2)}
-          </span>
-        </div>
-        <button className="btn-checkout" style={{ width: '100%' }} onClick={() => navigate('/checkout')}>
-          Proceed to Checkout ➔
-        </button>
       </div>
     </main>
   );
