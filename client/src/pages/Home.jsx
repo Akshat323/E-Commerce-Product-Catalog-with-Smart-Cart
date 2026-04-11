@@ -10,7 +10,8 @@ const Home = () => {
     type: '',
     minPrice: '',
     maxPrice: '',
-    rating: ''
+    rating: '',
+    search: ''
   });
   
   const [pagination, setPagination] = useState({ page: 1, limit: 8, totalPages: 1, totalResults: 0 });
@@ -23,6 +24,7 @@ const Home = () => {
     if (filters.minPrice) url += `&minPrice=${filters.minPrice}`;
     if (filters.maxPrice) url += `&maxPrice=${filters.maxPrice}`;
     if (filters.rating) url += `&minRating=${filters.rating}`;
+    if (filters.search) url += `&search=${filters.search}`;
     
     try {
       const res = await fetch(url);
@@ -145,10 +147,12 @@ const Home = () => {
           </select>
         </div>
         <div className="filter-group">
-          <span className="filter-label">Price</span>
-          <input type="number" className="filter-input" name="minPrice" placeholder="Min" value={filters.minPrice} onChange={handleFilterChange} min="0" />
-          <span style={{ color: 'var(--text-muted)' }}>—</span>
-          <input type="number" className="filter-input" name="maxPrice" placeholder="Max" value={filters.maxPrice} onChange={handleFilterChange} min="0" />
+          <span className="filter-label">Price Range</span>
+          <div className="filter-row">
+            <input type="number" className="filter-input" name="minPrice" placeholder="Min" value={filters.minPrice} onChange={handleFilterChange} min="0" />
+            <span className="filter-divider">—</span>
+            <input type="number" className="filter-input" name="maxPrice" placeholder="Max" value={filters.maxPrice} onChange={handleFilterChange} min="0" />
+          </div>
         </div>
         <div className="filter-group">
           <span className="filter-label">Rating</span>
@@ -158,6 +162,18 @@ const Home = () => {
             <option value="3">3+ Stars</option>
             <option value="2">2+ Stars</option>
           </select>
+        </div>
+        <div className="filter-group" style={{ flexGrow: 1, maxWidth: '400px' }}>
+          <span className="filter-label">Search Products</span>
+          <input 
+            type="text" 
+            className="filter-input" 
+            name="search" 
+            placeholder="Keywords (e.g. MacBook, Nike...)" 
+            value={filters.search} 
+            onChange={handleFilterChange} 
+            style={{ width: '100%' }}
+          />
         </div>
         <div className="filter-group">
           <button className="filter-btn filter-btn-primary" onClick={applyFilters}>Apply</button>
