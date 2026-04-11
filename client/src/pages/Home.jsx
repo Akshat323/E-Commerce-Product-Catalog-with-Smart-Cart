@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 
 const Home = () => {
@@ -6,11 +7,13 @@ const Home = () => {
   const [trending, setTrending] = useState([]);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
 
+  const [searchParams] = useSearchParams();
+  
   const [filters, setFilters] = useState({
-    type: '',
+    type: searchParams.get('type') || '',
     minPrice: '',
     maxPrice: '',
-    rating: '',
+    minRating: searchParams.get('minRating') || '',
     search: ''
   });
 
@@ -23,7 +26,7 @@ const Home = () => {
     if (filters.type) url += `&type=${filters.type}`;
     if (filters.minPrice) url += `&minPrice=${filters.minPrice}`;
     if (filters.maxPrice) url += `&maxPrice=${filters.maxPrice}`;
-    if (filters.rating) url += `&minRating=${filters.rating}`;
+    if (filters.minRating) url += `&minRating=${filters.minRating}`;
     if (filters.search) url += `&search=${filters.search}`;
 
     try {
@@ -78,24 +81,60 @@ const Home = () => {
       localStorage.setItem('sessionId', sessionId);
     }
 
+    // Sync filters with URL params
+    const typeFromUrl = searchParams.get('type') || '';
+    if (filters.type !== typeFromUrl) {
+      setFilters(prev => ({ ...prev, type: typeFromUrl }));
+    }
+
     fetchProducts();
     loadTrending();
     loadRecentlyViewed();
-  }, []);
+
+    // If there's a type param, scroll to products
+    if (searchParams.get('type')) {
+      setTimeout(() => {
+        document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+    }
+  }, [searchParams]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
+    
+    // If user manually changes type, update URL too
+    if (name === 'type') {
+      if (value) {
+        window.history.pushState({}, '', `/?type=${value}`);
+      } else {
+        window.history.pushState({}, '', '/');
+      }
+    }
   };
 
   const applyFilters = () => {
+    // Update URL to match all current filters
+    const params = new URLSearchParams();
+    if (filters.type) params.set('type', filters.type);
+    if (filters.minPrice) params.set('minPrice', filters.minPrice);
+    if (filters.maxPrice) params.set('maxPrice', filters.maxPrice);
+    if (filters.minRating) params.set('minRating', filters.minRating);
+    if (filters.search) params.set('search', filters.search);
+    
+    window.history.pushState({}, '', `/?${params.toString()}`);
     fetchProducts(1);
+    
+    // Smooth scroll to results
+    document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const clearFilters = () => {
-    setFilters({ type: '', minPrice: '', maxPrice: '', rating: '' });
-    // fetchProducts is NOT called immediately because state update is async, 
-    // but we can call it with empty values:
+    setFilters({ type: '', minPrice: '', maxPrice: '', minRating: '', search: '' });
+    // If there were URL params, clear them too
+    if (searchParams.get('type') || searchParams.get('minRating')) {
+      window.history.pushState({}, '', '/');
+    }
     setTimeout(() => {
       fetchProducts(1);
     }, 0);
@@ -173,11 +212,13 @@ const Home = () => {
         </div>
         <div className="filter-group">
           <span className="filter-label">Rating</span>
-          <select className="filter-select" name="rating" value={filters.rating} onChange={handleFilterChange} style={{ minWidth: '100px' }}>
+          <select className="filter-select" name="minRating" value={filters.minRating} onChange={handleFilterChange} style={{ minWidth: '100px' }}>
             <option value="">Any</option>
-            <option value="4">4+ Stars</option>
-            <option value="3">3+ Stars</option>
-            <option value="2">2+ Stars</option>
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="2">2 Stars</option>
+            <option value="1">1 Star</option>
           </select>
         </div>
         <div className="filter-group" style={{ flexGrow: 1, maxWidth: '400px' }}>

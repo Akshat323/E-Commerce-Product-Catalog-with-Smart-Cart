@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import Legals from './pages/Legals';
 import Footer from './components/Footer';
 
 function App() {
@@ -55,6 +56,12 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
+        
+        {/* Support Routes */}
+        <Route path="/shipping" element={<Legals title="Shipping & Delivery" type="shipping" />} />
+        <Route path="/returns" element={<Legals title="Returns & Exchanges" type="returns" />} />
+        <Route path="/terms" element={<Legals title="Terms of Service" type="terms" />} />
+        <Route path="/privacy" element={<Legals title="Privacy Policy" type="privacy" />} />
       </Routes>
 
       <Footer />

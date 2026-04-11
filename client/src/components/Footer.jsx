@@ -17,10 +17,10 @@ const Footer = () => {
           <div className="footer-column">
             <h3 className="footer-header">SHOP</h3>
             <ul className="footer-links">
+              <li><Link to="/?type=Clothing">Clothing</Link></li>
+              <li><Link to="/?type=Book">Books</Link></li>
+              <li><Link to="/?type=Electronics">Electronics</Link></li>
               <li><Link to="/">Latest Arrivals</Link></li>
-              <li><Link to="/">Trending Now</Link></li>
-              <li><Link to="/">Electronics</Link></li>
-              <li><Link to="/">Lifestyle</Link></li>
             </ul>
           </div>
 
@@ -28,10 +28,10 @@ const Footer = () => {
           <div className="footer-column">
             <h3 className="footer-header">SUPPORT</h3>
             <ul className="footer-links">
-              <li><Link to="/">Shipping & Delivery</Link></li>
-              <li><Link to="/">Returns & Exchanges</Link></li>
-              <li><Link to="/">Terms of Service</Link></li>
-              <li><Link to="/">Privacy Policy</Link></li>
+              <li><Link to="/shipping">Shipping & Delivery</Link></li>
+              <li><Link to="/returns">Returns & Exchanges</Link></li>
+              <li><Link to="/terms">Terms of Service</Link></li>
+              <li><Link to="/privacy">Privacy Policy</Link></li>
             </ul>
           </div>
 
@@ -39,10 +39,8 @@ const Footer = () => {
           <div className="footer-column">
             <h3 className="footer-header">CONNECT</h3>
             <ul className="footer-links">
-              <li><a href="#">Instagram</a></li>
-              <li><a href="#">Twitter/X</a></li>
-              <li><a href="#">Contact Us</a></li>
-              <li><a href="#">Store Locator</a></li>
+              <li><Link to="/contact">Contact Support</Link></li>
+              <li><Link to="/terms">Business Inquiries</Link></li>
             </ul>
           </div>
         </div>

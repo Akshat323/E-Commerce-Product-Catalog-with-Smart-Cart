@@ -6,6 +6,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [orderResult, setOrderResult] = useState(null);
+  const [purchasedItems, setPurchasedItems] = useState([]);
 
   useEffect(() => {
     const loadCheckout = async () => {
@@ -34,9 +35,11 @@ const Checkout = () => {
 
   const handlePlaceOrder = async () => {
     setProcessing(true);
+    // Capture items before checkout so we can show them on success
+    const currentItems = cart?.items || [];
+    
     try {
       const sessionId = localStorage.getItem('sessionId');
-      // checkout route previously used userId
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -46,6 +49,7 @@ const Checkout = () => {
       
       setOrderResult(data);
       if (data.success) {
+        setPurchasedItems(currentItems);
         window.dispatchEvent(new Event('cartUpdated'));
       }
     } catch (err) {
@@ -62,17 +66,57 @@ const Checkout = () => {
       return (
         <main className="main-content">
           <div className="checkout-status-card success">
+            <div className="status-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="status-icon-svg">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            
             <h2 className="status-title">Order Placed Successfully</h2>
+            
             <div className="status-details">
-              <p>Thank you for your purchase.</p>
+              <p className="status-subtitle">Thank you for your purchase. Your order is being processed.</p>
+              
               <div className="order-id-highlight">
                 Order ID: <span>{orderResult.data.order_id}</span>
               </div>
-              <p className="status-total">Total: ₹{orderResult.data.total_amount.toFixed(2)}</p>
+
+              {purchasedItems.length > 0 && (
+                <div className="order-snapshot">
+                  <h4 className="snapshot-header">Order Snapshot</h4>
+                  {purchasedItems.map((item, idx) => (
+                    <div key={idx} className="snapshot-item">
+                      <div className="snapshot-item-left">
+                        <div className="snapshot-thumbnail">
+                           <img 
+                            src={`/products/${item.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}.jpg`} 
+                            alt={item.name}
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'block';
+                            }}
+                          />
+                          <span style={{ display: 'none' }}>📦</span>
+                        </div>
+                        <span className="snapshot-name">{item.name} × {item.quantity}</span>
+                      </div>
+                      <span className="snapshot-price">₹{item.subtotal.toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="status-success-total">
+                <span className="total-label">Total Amount paid</span>
+                <strong className="total-value">₹{orderResult.data.total_amount.toFixed(2)}</strong>
+              </div>
             </div>
-            <Link to="/" className="filter-btn filter-btn-primary">
-              Continue Shopping
-            </Link>
+            
+            <div className="status-actions">
+              <Link to="/" className="filter-btn filter-btn-primary">
+                Continue Shopping
+              </Link>
+            </div>
           </div>
         </main>
       );
