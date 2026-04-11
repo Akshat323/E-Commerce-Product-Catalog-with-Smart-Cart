@@ -1,0 +1,316 @@
+{
+  "info": {
+    "name": "NovaMart — E-Commerce API",
+    "description": "Complete API collection for E-Commerce Product Catalog with Smart Cart",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api" },
+    { "key": "userId", "value": "user_postman_test" },
+    { "key": "productId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "List All Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?page=1&limit=12",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "12" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Products — Filter by Type",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?type=Electronics",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "type", "value": "Electronics" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Products — Filter by Price Range",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?minPrice=50&maxPrice=500",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "minPrice", "value": "50" },
+                { "key": "maxPrice", "value": "500" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Products — Filter by Rating",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?minRating=4",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "minRating", "value": "4" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}?userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"],
+              "query": [
+                { "key": "userId", "value": "{{userId}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Best-Selling Products (Aggregation)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/analytics/best-selling",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "analytics", "best-selling"]
+            }
+          }
+        },
+        {
+          "name": "Monthly Revenue Report (Aggregation)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/analytics/monthly-revenue",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "analytics", "monthly-revenue"]
+            }
+          }
+        },
+        {
+          "name": "Low-Rated Products (Aggregation)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/analytics/low-rated",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "analytics", "low-rated"]
+            }
+          }
+        },
+        {
+          "name": "Stock Summary (Aggregation)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/analytics/stock-summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "analytics", "stock-summary"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/cart/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "add"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/cart/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/cart/update",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "update"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove Item from Cart",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/cart/remove",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "remove"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"productId\": \"{{productId}}\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Checkout",
+      "item": [
+        {
+          "name": "Place Order (Checkout)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/checkout",
+              "host": ["{{baseUrl}}"],
+              "path": ["checkout"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Order History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/checkout/orders/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["checkout", "orders", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trending & Recently Viewed",
+      "item": [
+        {
+          "name": "Get Trending Products (Top 10)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/trending",
+              "host": ["{{baseUrl}}"],
+              "path": ["trending"]
+            }
+          }
+        },
+        {
+          "name": "Get Recently Viewed",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/recently-viewed/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["recently-viewed", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": \"{{productId}}\",\n  \"user_id\": \"{{userId}}\",\n  \"rating\": 5,\n  \"comment\": \"Excellent product! Highly recommended.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Product Reviews",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reviews/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "{{productId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

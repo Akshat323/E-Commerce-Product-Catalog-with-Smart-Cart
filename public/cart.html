@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your shopping cart — review items and proceed to checkout.">
+  <title>Cart — Martify</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ─── Navigation ──────────────────────────────────────────── -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="/" class="navbar-brand">
+        <div class="logo-icon">⚡</div>
+        NovaMart
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="/" class="nav-link" id="nav-home">🏠 Home</a></li>
+        <li><a href="/cart.html" class="nav-link active" id="nav-cart">🛒 Cart <span class="cart-badge" id="cart-badge">0</span></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ─── Toast Container ─────────────────────────────────────── -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ─── Main Content ────────────────────────────────────────── -->
+  <main class="main-content">
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="/">Home</a>
+        <span class="separator">›</span>
+        <span>Shopping Cart</span>
+      </div>
+      <h1 class="page-title">🛒 Shopping Cart</h1>
+    </div>
+
+    <div id="cart-content">
+      <div class="loading-spinner"><div class="spinner"></div></div>
+    </div>
+  </main>
+
+  <script src="/js/cart.js"></script>
+</body>
+</html>
