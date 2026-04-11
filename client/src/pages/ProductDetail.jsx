@@ -1,0 +1,201 @@
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
+const ProductDetail = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [qty, setQty] = useState(1);
+  const [addingToCart, setAddingToCart] = useState(false);
+  
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        let sessionId = localStorage.getItem('sessionId');
+        const res = await fetch(`/api/products/${id}?sessionId=${sessionId}`);
+        const data = await res.json();
+        if (res.ok) {
+          setProduct(data.data);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(`/api/products/${id}/reviews`);
+        const data = await res.json();
+        if (res.ok) {
+          setReviews(data.data);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    setLoading(true);
+    Promise.all([fetchProduct(), fetchReviews()]).then(() => setLoading(false));
+  }, [id]);
+
+  const handleAddToCart = async () => {
+    setAddingToCart(true);
+    try {
+      const payload = {
+        sessionId: localStorage.getItem('sessionId'),
+        productId: product._id,
+        quantity: qty
+      };
+      
+      const res = await fetch('/api/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (res.ok) {
+        window.dispatchEvent(new Event('cartUpdated'));
+        // show toast
+        alert('Added to cart!');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to add to cart');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error adding to cart');
+    }
+    setAddingToCart(false);
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        ...reviewForm,
+        user: `User-${Math.floor(Math.random() * 1000)}` 
+      };
+      
+      const res = await fetch(`/api/products/${id}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setReviews([...reviews, data.data]);
+        setReviewForm({ rating: 5, comment: '' });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
+  if (!product) return <div className="empty-state">Product not found</div>;
+
+  return (
+    <main className="main-content">
+      <div className="product-detail">
+        <div className="product-detail-image">
+          {product.type === 'Electronics' ? '💻' : product.type === 'Book' ? '📚' : product.type === 'Clothing' ? '👕' : '📦'}
+        </div>
+        
+        <div className="product-detail-info">
+          <span className="product-detail-type">{product.type}</span>
+          <h1 className="product-detail-name">{product.name}</h1>
+          <div className="product-detail-price">${product.price.toFixed(2)}</div>
+          
+          <div className="product-specs">
+            {Object.entries(product.attributes || {}).map(([key, val]) => (
+              <p key={key} style={{ marginBottom: '8px' }}>
+                <strong style={{ textTransform: 'capitalize', color: 'var(--text-muted)' }}>{key}:</strong> {val}
+              </p>
+            ))}
+          </div>
+          
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+            <div className="qty-selector">
+              <button 
+                className="qty-btn" 
+                onClick={() => setQty(Math.max(1, qty - 1))}
+              >-</button>
+              <input type="text" className="qty-value" value={qty} readOnly />
+              <button 
+                className="qty-btn" 
+                onClick={() => setQty(Math.min(product.stockCount, qty + 1))}
+                disabled={qty >= product.stockCount}
+              >+</button>
+            </div>
+            <button 
+              className="btn-add-cart" 
+              onClick={handleAddToCart}
+              disabled={addingToCart || product.stockCount === 0}
+              style={{ flex: 1 }}
+            >
+              {addingToCart ? 'Adding...' : product.stockCount === 0 ? 'Out of Stock' : 'Add to Cart 🛒'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <section className="reviews-section">
+        <h2 className="section-title" style={{ marginBottom: '1.5rem' }}>Customer Reviews</h2>
+        
+        <form className="review-form" onSubmit={handleReviewSubmit}>
+          <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Write a Review</h3>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Rating</label>
+            <select 
+              className="form-control" 
+              value={reviewForm.rating} 
+              onChange={e => setReviewForm({...reviewForm, rating: Number(e.target.value)})}
+            >
+              {[5,4,3,2,1].map(r => <option key={r} value={r}>{r} Stars</option>)}
+            </select>
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Comment</label>
+            <textarea 
+              className="form-control" 
+              rows="3" 
+              required
+              value={reviewForm.comment}
+              onChange={e => setReviewForm({...reviewForm, comment: e.target.value})}
+            ></textarea>
+          </div>
+          <button type="submit" className="filter-btn filter-btn-primary">Submit Review</button>
+        </form>
+
+        <div className="reviews-list">
+          {reviews.length === 0 ? (
+             <p style={{ color: 'var(--text-muted)' }}>No reviews yet.</p>
+          ) : (
+            reviews.map(r => (
+              <div key={r._id} className="review-item">
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontWeight: '600', color: '#fff' }}>{r.user}</span>
+                  <span className="rating-stars">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className={`star ${i < r.rating ? '' : 'empty'}`}>★</span>
+                    ))}
+                  </span>
+                </div>
+                <p style={{ color: 'var(--text-muted)', lineHeight: '1.5' }}>{r.comment}</p>
+                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginTop: '0.5rem' }}>
+                  {new Date(r.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+    </main>
+  );
+};
+
+export default ProductDetail;
