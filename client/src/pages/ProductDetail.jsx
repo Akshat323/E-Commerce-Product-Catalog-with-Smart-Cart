@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+
+const getProductImage = (name) => {
+  // Slugify name: "Blue Shirt" -> "blue_shirt.jpg"
+  const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  return `/products/${slug}.jpg`;
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -104,7 +110,18 @@ const ProductDetail = () => {
     <main className="main-content">
       <div className="product-detail">
         <div className="product-detail-image">
-          {product.type === 'Electronics' ? '💻' : product.type === 'Book' ? '📚' : product.type === 'Clothing' ? '👕' : '📦'}
+          <img 
+            src={getProductImage(product.name)} 
+            alt={product.name}
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'block';
+            }}
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
+          <span style={{ display: 'none' }}>
+            {product.type === 'Electronics' ? '💻' : product.type === 'Book' ? '📚' : product.type === 'Clothing' ? '👕' : '📦'}
+          </span>
         </div>
         
         <div className="product-detail-info">
