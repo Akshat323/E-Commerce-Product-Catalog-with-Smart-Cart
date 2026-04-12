@@ -20,7 +20,6 @@ const Footer = () => {
               <li><Link to="/?type=Clothing">Clothing</Link></li>
               <li><Link to="/?type=Book">Books</Link></li>
               <li><Link to="/?type=Electronics">Electronics</Link></li>
-              <li><Link to="/">Latest Arrivals</Link></li>
             </ul>
           </div>
 
@@ -39,8 +38,7 @@ const Footer = () => {
           <div className="footer-column">
             <h3 className="footer-header">CONNECT</h3>
             <ul className="footer-links">
-              <li><Link to="/contact">Contact Support</Link></li>
-              <li><Link to="/terms">Business Inquiries</Link></li>
+              <li><Link to="/about">About Us</Link></li>
             </ul>
           </div>
         </div>

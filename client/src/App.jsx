@@ -44,6 +44,7 @@ function App() {
           <Link to="/" className="logo">Martify</Link>
           <div className="nav-links">
             <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
             <Link to="/cart">
               Cart {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             </Link>
@@ -62,6 +63,7 @@ function App() {
         <Route path="/returns" element={<Legals title="Returns & Exchanges" type="returns" />} />
         <Route path="/terms" element={<Legals title="Terms of Service" type="terms" />} />
         <Route path="/privacy" element={<Legals title="Privacy Policy" type="privacy" />} />
+        <Route path="/about" element={<Legals title="About Us" type="about" />} />
       </Routes>
 
       <Footer />

@@ -55,6 +55,26 @@ const Legals = ({ title, type }) => {
             <p>Our site uses essential cookies for cart persistence and basic analytics to improve site performance.</p>
           </>
         );
+      case 'about':
+        return (
+          <>
+            <h3>The Martify Story</h3>
+            <p>Martify was born out of a simple observation: the world is full of products that are either beautiful but fragile, or functional but uninspired. We set out to bridge this gap, curating an ecosystem of high-utility essentials designed for the modern individual.</p>
+            <h3>Our Philosophy</h3>
+            <p>We lean into minimalism, not as an aesthetic choice, but as a lifestyle efficiency. Every product in our catalog—from electronics to apparel—is hand-selected for its durability, design integrity, and practical utility in daily life.</p>
+            <h3>Global Standards, Local Roots</h3>
+            <p>While we source and ship globally, we maintain a strong commitment to quality control and personal service. We aren't just a store; we are a community of individuals who value excellence and long-term utility over transient trends.</p>
+            <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--border-color)' }}>
+              <h3>Headquarters</h3>
+              <p>Martify Global Operations<br />
+              MIT, Manipal - 576104<br />
+              Karnataka, India</p>
+              <h3 style={{ marginTop: '1.5rem' }}>Get in Touch</h3>
+              <p>For support, partnerships, or general inquiries:<br />
+              <strong>Email:</strong> <a href="mailto:Martify@gmail.com" style={{ color: 'var(--thalasi-black)', textDecoration: 'underline' }}>Martify@gmail.com</a></p>
+            </div>
+          </>
+        );
       default:
         return <p>Legal information coming soon.</p>;
     }

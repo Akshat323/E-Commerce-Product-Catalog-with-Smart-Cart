@@ -9,7 +9,7 @@ const reviewController = {
    */
   async createReview(req, res) {
     try {
-      const { product_id, user_id, rating, comment } = req.body;
+      const { product_id, user_id, username, rating, comment } = req.body;
 
       if (!product_id || !user_id || !rating) {
         return res.status(400).json({
@@ -29,7 +29,8 @@ const reviewController = {
 
       const review = await Review.create({
         product_id,
-        user_id,
+        user_id: user_id || 'anonymous',
+        username,
         rating: parseInt(rating),
         comment: comment || ''
       });

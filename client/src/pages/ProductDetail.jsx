@@ -15,7 +15,7 @@ const ProductDetail = () => {
   const [qty, setQty] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   
-  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+  const [reviewForm, setReviewForm] = useState({ username: '', rating: 5, comment: '' });
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -82,7 +82,8 @@ const ProductDetail = () => {
     try {
       const payload = {
         product_id: id,
-        user_id: `User-${Math.floor(Math.random() * 1000)}`,
+        user_id: localStorage.getItem('sessionId') || 'anonymous',
+        username: reviewForm.username,
         rating: reviewForm.rating,
         comment: reviewForm.comment
       };
@@ -96,7 +97,7 @@ const ProductDetail = () => {
       if (res.ok) {
         const data = await res.json();
         setReviews([...reviews, data.data]);
-        setReviewForm({ rating: 5, comment: '' });
+        setReviewForm({ username: '', rating: 5, comment: '' });
       }
     } catch (err) {
       console.error(err);
@@ -216,6 +217,17 @@ const ProductDetail = () => {
         <form className="review-form" onSubmit={handleReviewSubmit}>
           <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Write a Review</h3>
           <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Your Name</label>
+            <input 
+              type="text" 
+              className="form-control" 
+              required
+              placeholder="e.g. John Doe"
+              value={reviewForm.username}
+              onChange={e => setReviewForm({...reviewForm, username: e.target.value})}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Rating</label>
             <select 
               className="form-control" 
@@ -245,7 +257,7 @@ const ProductDetail = () => {
             reviews.map(r => (
               <div key={r._id} className="review-item">
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span className="review-username">{r.user_id}</span>
+                  <span className="review-username">{r.username || r.user_id}</span>
                   <span className="rating-stars">
                     {[...Array(5)].map((_, i) => (
                       <span key={i} className={`star ${i < r.rating ? 'active' : ''}`}>★</span>
