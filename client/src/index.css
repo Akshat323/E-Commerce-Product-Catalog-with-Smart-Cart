@@ -797,11 +797,67 @@ td {
 
 /* ─── Checkout Page ──────────────────────────────────────────────── */
 .checkout-summary-card {
+  border: 1px solid var(--thalasi-black);
+  padding: 4rem;
+  width: 100%;
+}
+
+.checkout-container {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.shipping-form-container {
   background: var(--thalasi-white);
   border: 1px solid var(--thalasi-black);
   padding: 4rem;
-  max-width: 700px;
-  margin: 0 auto;
+}
+
+.checkout-form {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+}
+
+.form-row-multi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-control.error {
+  border-color: var(--thalasi-red);
+  background-color: #fff8f8;
+}
+
+.error-text {
+  color: var(--thalasi-red);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .checkout-items-list {

@@ -7,6 +7,15 @@ const Checkout = () => {
   const [processing, setProcessing] = useState(false);
   const [orderResult, setOrderResult] = useState(null);
   const [purchasedItems, setPurchasedItems] = useState([]);
+  const [formData, setFormData] = useState({
+    customer_name: '',
+    email: '',
+    address: '',
+    city: '',
+    zip_code: '',
+    phone: ''
+  });
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     const loadCheckout = async () => {
@@ -33,7 +42,35 @@ const Checkout = () => {
     loadCheckout();
   }, []);
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user types
+    if (formErrors[name]) {
+      setFormErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.customer_name.trim()) errors.customer_name = 'Name is required';
+    if (!formData.email.trim()) errors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = 'Email is invalid';
+    if (!formData.address.trim()) errors.address = 'Address is required';
+    if (!formData.city.trim()) errors.city = 'City is required';
+    if (!formData.zip_code.trim()) errors.zip_code = 'Zip code is required';
+    if (!formData.phone.trim()) errors.phone = 'Phone is required';
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handlePlaceOrder = async () => {
+    if (!validateForm()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     setProcessing(true);
     // Capture items before checkout so we can show them on success
     const currentItems = cart?.items || [];
@@ -43,7 +80,10 @@ const Checkout = () => {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: sessionId })
+        body: JSON.stringify({ 
+          userId: sessionId,
+          ...formData
+        })
       });
       const data = await res.json();
       
@@ -165,8 +205,95 @@ const Checkout = () => {
       <div className="section-header">
         <h1 className="section-title">Checkout</h1>
       </div>
+      
+      <div className="checkout-container">
+        <div className="shipping-form-container">
+          <h3 className="summary-title">Shipping Details</h3>
+          
+          <div className="checkout-form">
+            <div className="form-group">
+              <label>Full Name</label>
+              <input 
+                type="text" 
+                name="customer_name"
+                className={`form-control ${formErrors.customer_name ? 'error' : ''}`}
+                placeholder="Enter your full name"
+                value={formData.customer_name}
+                onChange={handleInputChange}
+              />
+              {formErrors.customer_name && <span className="error-text">{formErrors.customer_name}</span>}
+            </div>
 
-      <div className="checkout-summary-card">
+            <div className="form-group">
+              <label>Email Address</label>
+              <input 
+                type="email" 
+                name="email"
+                className={`form-control ${formErrors.email ? 'error' : ''}`}
+                placeholder="example@mail.com"
+                value={formData.email}
+                onChange={handleInputChange}
+              />
+              {formErrors.email && <span className="error-text">{formErrors.email}</span>}
+            </div>
+
+            <div className="form-group">
+              <label>Street Address</label>
+              <input 
+                type="text" 
+                name="address"
+                className={`form-control ${formErrors.address ? 'error' : ''}`}
+                placeholder="Apt, Suite, Street name"
+                value={formData.address}
+                onChange={handleInputChange}
+              />
+              {formErrors.address && <span className="error-text">{formErrors.address}</span>}
+            </div>
+
+            <div className="form-row-multi">
+              <div className="form-group">
+                <label>City</label>
+                <input 
+                  type="text" 
+                  name="city"
+                  className={`form-control ${formErrors.city ? 'error' : ''}`}
+                  placeholder="City"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                />
+                {formErrors.city && <span className="error-text">{formErrors.city}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>Zip Code</label>
+                <input 
+                  type="text" 
+                  name="zip_code"
+                  className={`form-control ${formErrors.zip_code ? 'error' : ''}`}
+                  placeholder="000000"
+                  value={formData.zip_code}
+                  onChange={handleInputChange}
+                />
+                {formErrors.zip_code && <span className="error-text">{formErrors.zip_code}</span>}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Phone Number</label>
+              <input 
+                type="tel" 
+                name="phone"
+                className={`form-control ${formErrors.phone ? 'error' : ''}`}
+                placeholder="+91 XXXXX XXXXX"
+                value={formData.phone}
+                onChange={handleInputChange}
+              />
+              {formErrors.phone && <span className="error-text">{formErrors.phone}</span>}
+            </div>
+          </div>
+        </div>
+
+        <div className="checkout-summary-card">
         <h3 className="summary-title">Order Summary</h3>
         
         <div className="checkout-items-list">
@@ -195,8 +322,9 @@ const Checkout = () => {
           By placing this order, stock will be validated and your cart will be cleared.
         </p>
       </div>
-    </main>
-  );
+    </div>
+  </main>
+);
 };
 
 export default Checkout;

@@ -14,12 +14,20 @@ const checkoutController = {
    */
   async checkout(req, res) {
     try {
-      const { userId } = req.body;
+      const { 
+        userId, 
+        customer_name, 
+        email, 
+        address, 
+        city, 
+        zip_code, 
+        phone 
+      } = req.body;
 
-      if (!userId) {
+      if (!userId || !customer_name || !email || !address || !city || !zip_code || !phone) {
         return res.status(400).json({
           success: false,
-          message: 'userId is required'
+          message: 'All customer details (name, email, address, city, zip, phone) are required.'
         });
       }
 
@@ -76,7 +84,13 @@ const checkoutController = {
         user_id: userId,
         order_items: orderItems,
         total_amount: Math.round(totalAmount * 100) / 100,
-        status: 'completed'
+        status: 'completed',
+        customer_name,
+        email,
+        address,
+        city,
+        zip_code,
+        phone
       });
 
       // Step 4: Update stock and computed fields using $inc
