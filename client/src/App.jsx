@@ -7,7 +7,7 @@ import Checkout from './pages/Checkout';
 import Legals from './pages/Legals';
 import Footer from './components/Footer';
 
-function App() { 
+function App() {
   const [cartCount, setCartCount] = useState(0);
 
   const fetchCartCount = async () => {
