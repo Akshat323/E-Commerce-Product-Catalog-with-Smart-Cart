@@ -65,9 +65,9 @@ const startServer = async () => {
   try {
     await connectDB();
     app.listen(PORT, () => {
-      console.log(`\n🚀 Server running on http://localhost:${PORT}`);
-      console.log(`📦 API endpoints at http://localhost:${PORT}/api`);
-      console.log(`🌐 Frontend at http://localhost:${PORT}\n`);
+      console.log(`\nServer running on http://localhost:${PORT}`);
+      console.log(`API endpoints at http://localhost:${PORT}/api`);
+      console.log(`Frontend at http://localhost:${PORT}\n`);
     });
   } catch (error) {
     console.error('Failed to start server:', error.message);

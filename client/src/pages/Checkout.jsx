@@ -12,6 +12,7 @@ const Checkout = () => {
     email: '',
     address: '',
     city: '',
+    state: '',
     zip_code: '',
     phone: ''
   });
@@ -27,11 +28,27 @@ const Checkout = () => {
           return;
         }
         
-        const res = await fetch(`/api/cart/${sessionId}`);
-        const data = await res.json();
-        
-        if (res.ok && data.success) {
-          setCart(data.data);
+        // 1. Fetch Cart Data
+        const cartRes = await fetch(`/api/cart/${sessionId}`);
+        const cartData = await cartRes.json();
+        if (cartRes.ok && cartData.success) {
+          setCart(cartData.data);
+        }
+
+        // 2. Fetch Saved Profile (Non-blocking)
+        try {
+          const profileRes = await fetch(`/api/checkout/profile/${sessionId}`);
+          if (profileRes.ok) {
+            const profileData = await profileRes.json();
+            if (profileData.success && profileData.data) {
+              setFormData(prev => ({
+                ...prev,
+                ...profileData.data
+              }));
+            }
+          }
+        } catch (profileErr) {
+          console.log("Autofill profile not found or server not ready yet.");
         }
       } catch (err) {
         console.error(err);
@@ -58,6 +75,7 @@ const Checkout = () => {
     else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = 'Email is invalid';
     if (!formData.address.trim()) errors.address = 'Address is required';
     if (!formData.city.trim()) errors.city = 'City is required';
+    if (!formData.state.trim()) errors.state = 'State is required';
     if (!formData.zip_code.trim()) errors.zip_code = 'Zip code is required';
     if (!formData.phone.trim()) errors.phone = 'Phone is required';
     
@@ -262,6 +280,29 @@ const Checkout = () => {
                   onChange={handleInputChange}
                 />
                 {formErrors.city && <span className="error-text">{formErrors.city}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>State</label>
+                <select 
+                  name="state"
+                  className={`form-control ${formErrors.state ? 'error' : ''}`}
+                  value={formData.state}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select State</option>
+                  {[
+                    "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
+                    "Chandigarh", "Chhattisgarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Goa", 
+                    "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", 
+                    "Kerala", "Ladakh", "Lakshadweep", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", 
+                    "Mizoram", "Nagaland", "Odisha", "Puducherry", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", 
+                    "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+                  ].map(state => (
+                    <option key={state} value={state}>{state}</option>
+                  ))}
+                </select>
+                {formErrors.state && <span className="error-text">{formErrors.state}</span>}
               </div>
 
               <div className="form-group">

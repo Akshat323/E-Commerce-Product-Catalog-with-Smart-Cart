@@ -18,7 +18,7 @@ let isConnected = false;
 
 redis.on('connect', () => {
   isConnected = true;
-  console.log('✅ Redis Connected');
+  console.log('Redis Connected');
 });
 
 redis.on('error', (err) => {

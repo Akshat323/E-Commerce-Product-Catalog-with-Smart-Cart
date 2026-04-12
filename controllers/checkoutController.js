@@ -1,4 +1,5 @@
 const cartService = require('../redis/cartService');
+const profileService = require('../redis/profileService');
 const { Product } = require('../models/Product');
 const Order = require('../models/Order');
 
@@ -20,14 +21,15 @@ const checkoutController = {
         email, 
         address, 
         city, 
+        state,
         zip_code, 
         phone 
       } = req.body;
 
-      if (!userId || !customer_name || !email || !address || !city || !zip_code || !phone) {
+      if (!userId || !customer_name || !email || !address || !city || !state || !zip_code || !phone) {
         return res.status(400).json({
           success: false,
-          message: 'All customer details (name, email, address, city, zip, phone) are required.'
+          message: 'All customer details (name, email, address, city, state, zip, phone) are required.'
         });
       }
 
@@ -89,6 +91,7 @@ const checkoutController = {
         email,
         address,
         city,
+        state,
         zip_code,
         phone
       });
@@ -105,8 +108,19 @@ const checkoutController = {
       );
       await Promise.all(updatePromises);
 
-      // Step 5: Delete Redis cart
-      await cartService.deleteCart(userId);
+      // Step 5: Delete Redis cart and save profile for autofill
+      await Promise.all([
+        cartService.deleteCart(userId),
+        profileService.saveProfile(userId, {
+          customer_name,
+          email,
+          address,
+          city,
+          state,
+          zip_code,
+          phone
+        })
+      ]);
 
       res.json({
         success: true,
@@ -141,6 +155,21 @@ const checkoutController = {
       res.json({ success: true, data: orders });
     } catch (error) {
       console.error('Error fetching orders:', error);
+      res.status(500).json({ success: false, message: error.message });
+    }
+  },
+
+  /**
+   * GET /api/checkout/profile/:userId
+   * Get the saved shipping profile from Redis
+   */
+  async getLatestProfile(req, res) {
+    try {
+      const { userId } = req.params;
+      const profile = await profileService.getProfile(userId);
+      res.json({ success: true, data: profile });
+    } catch (error) {
+      console.error('Error fetching profile:', error);
       res.status(500).json({ success: false, message: error.message });
     }
   }
