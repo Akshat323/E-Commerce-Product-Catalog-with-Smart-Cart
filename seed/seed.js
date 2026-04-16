@@ -14,7 +14,7 @@ const seedData = async () => {
     await Review.deleteMany({});
     console.log('Cleared existing products and reviews');
 
-    // ─── Electronics (8 products) ──────────────────────────────────
+    // electronics data
     const electronics = [
       {
         name: 'MacBook Pro 16" M3 Max',
@@ -178,7 +178,7 @@ const seedData = async () => {
       }
     ];
 
-    // ─── Books (7 products) ────────────────────────────────────────
+    // books data
     const books = [
       {
         name: 'Clean Code: A Handbook of Agile Software',
@@ -294,7 +294,7 @@ const seedData = async () => {
       }
     ];
 
-    // ─── Clothing (7 products) ─────────────────────────────────────
+    // clothing data
     const clothing = [
       {
         name: 'Nike Air Max 270 React',
@@ -416,7 +416,7 @@ const seedData = async () => {
     const total = insertedElectronics.length + insertedBooks.length + insertedClothing.length;
     console.log(`\n🎉 Total products seeded: ${total}`);
 
-    // ─── Seed some reviews ────────────────────────────────────────
+    // add some reviews
     const sampleReviews = [
       { product_id: insertedElectronics[0]._id, user_id: 'user_1', rating: 5, comment: 'Absolutely incredible machine. The M3 Max chip is a beast!' },
       { product_id: insertedElectronics[0]._id, user_id: 'user_2', rating: 5, comment: 'Best laptop I\'ve ever owned. The display is gorgeous.' },

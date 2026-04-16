@@ -19,7 +19,7 @@ const recentlyViewedRoutes = require('./routes/recentlyViewedRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ─── Middleware ──────────────────────────────────────────────────────
+// middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static frontend files (React dist)
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
-// ─── API Routes ─────────────────────────────────────────────────────
+// api routes
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/checkout', checkoutRoutes);
@@ -35,7 +35,7 @@ app.use('/api/trending', trendingRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/recently-viewed', recentlyViewedRoutes);
 
-// ─── Health Check ───────────────────────────────────────────────────
+// simple health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -44,14 +44,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ─── SPA Fallback — serve index.html for frontend routes ────────────
+// fallback to react app
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) {
     res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
   }
 });
 
-// ─── Cron Job: Reset trending sorted set every hour ─────────────────
+// cron job to reset trending metrics every hour
 cron.schedule('0 * * * *', async () => {
   try {
     await trendingService.resetTrending();
@@ -60,7 +60,7 @@ cron.schedule('0 * * * *', async () => {
   }
 });
 
-// ─── Start Server ───────────────────────────────────────────────────
+// start the server
 const startServer = async () => {
   try {
     await connectDB();

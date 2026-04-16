@@ -2,11 +2,7 @@ const Review = require('../models/Review');
 const { Product } = require('../models/Product');
 
 const reviewController = {
-  /**
-   * POST /reviews
-   * Create a review — post-save hook recalculates avg_rating on Product
-   * Body: { product_id, user_id, rating, comment }
-   */
+  // post a new review
   async createReview(req, res) {
     try {
       const { product_id, user_id, username, rating, comment } = req.body;
@@ -46,10 +42,7 @@ const reviewController = {
     }
   },
 
-  /**
-   * GET /reviews/:productId
-   * Get all reviews for a product
-   */
+  // get reviews for a product
   async getProductReviews(req, res) {
     try {
       const { productId } = req.params;

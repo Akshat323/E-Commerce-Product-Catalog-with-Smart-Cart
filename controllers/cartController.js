@@ -2,11 +2,7 @@ const cartService = require('../redis/cartService');
 const { Product } = require('../models/Product');
 
 const cartController = {
-  /**
-   * POST /cart/add
-   * Add item to Redis cart hash
-   * Body: { userId, productId, quantity }
-   */
+  // add item to the cart in redis
   async addToCart(req, res) {
     try {
       const { userId, productId, quantity = 1 } = req.body;
@@ -47,10 +43,7 @@ const cartController = {
     }
   },
 
-  /**
-   * GET /cart/:userId
-   * Fetch cart from Redis with product details from MongoDB
-   */
+  // get user cart and join with mongo product details
   async getCart(req, res) {
     try {
       const { userId } = req.params;
@@ -102,11 +95,7 @@ const cartController = {
     }
   },
 
-  /**
-   * DELETE /cart/remove
-   * Remove item from cart or decrement quantity
-   * Body: { userId, productId, decrementBy }
-   */
+  // delete item from cart or reduce its count
   async removeFromCart(req, res) {
     try {
       const { userId, productId, decrementBy } = req.body;
@@ -140,11 +129,7 @@ const cartController = {
     }
   },
 
-  /**
-   * PUT /cart/update
-   * Update quantity of an item in cart
-   * Body: { userId, productId, quantity }
-   */
+  // change quantity of cart item
   async updateQuantity(req, res) {
     try {
       const { userId, productId, quantity } = req.body;

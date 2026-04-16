@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// ─── Base Product Schema (Polymorphic Pattern) ─────────────────────
+// base product schema (allows saving diff product types together)
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -37,7 +37,7 @@ const productSchema = new mongoose.Schema({
     default: ''
   },
 
-  // ─── Computed Pattern Fields ───────────────────────────────────────
+  // computed fields for analytics
   total_sold: {
     type: Number,
     default: 0
@@ -61,7 +61,7 @@ const productSchema = new mongoose.Schema({
   discriminatorKey: 'type'
 });
 
-// Indexes for filtering & sorting
+// indexes to make queries faster
 productSchema.index({ category: 1 });
 productSchema.index({ price: 1 });
 productSchema.index({ avg_rating: -1 });
@@ -71,7 +71,7 @@ productSchema.index({ total_sold: -1 });
 const Product = mongoose.model('Product', productSchema);
 
 
-// ─── Electronics Discriminator ───────────────────────────────────────
+// electronics specific fields
 const electronicsSchema = new mongoose.Schema({
   warranty_months: {
     type: Number,
@@ -89,7 +89,7 @@ const electronicsSchema = new mongoose.Schema({
 const Electronics = Product.discriminator('Electronics', electronicsSchema);
 
 
-// ─── Book Discriminator ──────────────────────────────────────────────
+// books specific fields
 const bookSchema = new mongoose.Schema({
   author: {
     type: String,
@@ -112,7 +112,7 @@ const bookSchema = new mongoose.Schema({
 const Book = Product.discriminator('Book', bookSchema);
 
 
-// ─── Clothing Discriminator ─────────────────────────────────────────
+// clothing specific fields
 const clothingSchema = new mongoose.Schema({
   size: {
     type: [String],

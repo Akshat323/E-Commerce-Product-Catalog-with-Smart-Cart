@@ -4,15 +4,7 @@ const { Product } = require('../models/Product');
 const Order = require('../models/Order');
 
 const checkoutController = {
-  /**
-   * POST /checkout
-   * Full checkout flow:
-   * 1. Read cart from Redis
-   * 2. Validate stock in MongoDB
-   * 3. Create order document
-   * 4. $inc stock and computed fields
-   * 5. Delete Redis cart key
-   */
+  // handle user checkout (create order and clear cart)
   async checkout(req, res) {
     try {
       const { 
@@ -33,7 +25,7 @@ const checkoutController = {
         });
       }
 
-      // Step 1: Read cart from Redis
+      // step 1: get cart data
       const cart = await cartService.getCart(userId);
 
       if (!cart || Object.keys(cart).length === 0) {
@@ -43,7 +35,7 @@ const checkoutController = {
         });
       }
 
-      // Step 2: Fetch products and validate stock
+      // step 2: get products to check stock
       const productIds = Object.keys(cart);
       const products = await Product.find({ _id: { $in: productIds } });
 
@@ -81,7 +73,7 @@ const checkoutController = {
         });
       }
 
-      // Step 3: Create order document with embedded snapshots
+      // step 3: create the order in db
       const order = await Order.create({
         user_id: userId,
         order_items: orderItems,
@@ -96,7 +88,7 @@ const checkoutController = {
         phone
       });
 
-      // Step 4: Update stock and computed fields using $inc
+      // step 4: update sales and stock count
       const updatePromises = orderItems.map(item =>
         Product.findByIdAndUpdate(item.product_id, {
           $inc: {
@@ -108,7 +100,7 @@ const checkoutController = {
       );
       await Promise.all(updatePromises);
 
-      // Step 5: Delete Redis cart and save profile for autofill
+      // step 5: empty cart and save profile
       await Promise.all([
         cartService.deleteCart(userId),
         profileService.saveProfile(userId, {
@@ -140,10 +132,7 @@ const checkoutController = {
     }
   },
 
-  /**
-   * GET /orders/:userId
-   * Get order history for a user
-   */
+  // get user's past orders
   async getOrders(req, res) {
     try {
       const { userId } = req.params;
@@ -159,10 +148,7 @@ const checkoutController = {
     }
   },
 
-  /**
-   * GET /api/checkout/profile/:userId
-   * Get the saved shipping profile from Redis
-   */
+  // grab saved shipping details
   async getLatestProfile(req, res) {
     try {
       const { userId } = req.params;

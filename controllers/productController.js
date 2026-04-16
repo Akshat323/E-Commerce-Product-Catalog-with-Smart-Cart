@@ -5,12 +5,8 @@ const trendingService = require('../redis/trendingService');
 const recentlyViewedService = require('../redis/recentlyViewedService');
 
 const productController = {
-  /**
-   * GET /products
-   * List products with filters: type, minPrice, maxPrice, minRating, category, brand
-   * Supports pagination: page, limit
-   * Increments view counter and updates recently viewed if userId provided
-   */
+  // get all products (supports filters and pagination)
+  // also increases view count if user is logged in
   async listProducts(req, res) {
     try {
       const {
@@ -77,10 +73,7 @@ const productController = {
     }
   },
 
-  /**
-   * GET /products/:id
-   * Product detail — triggers view counter + recently viewed
-   */
+  // fetch a single product by id and track view
   async getProduct(req, res) {
     try {
       const { id } = req.params;
@@ -115,10 +108,7 @@ const productController = {
     }
   },
 
-  /**
-   * GET /products/analytics/best-selling
-   * Best-selling products per category
-   */
+  // get best selling items for each category
   async bestSelling(req, res) {
     try {
       const results = await Product.aggregate([
@@ -159,10 +149,7 @@ const productController = {
     }
   },
 
-  /**
-   * GET /products/analytics/monthly-revenue
-   * Monthly revenue report from orders
-   */
+  // get revenue per month
   async monthlyRevenue(req, res) {
     try {
       const results = await Order.aggregate([
@@ -199,10 +186,7 @@ const productController = {
     }
   },
 
-  /**
-   * GET /products/analytics/low-rated
-   * Products with avg_rating < 3
-   */
+  // get badly rated products
   async lowRated(req, res) {
     try {
       const results = await Product.aggregate([
@@ -234,10 +218,7 @@ const productController = {
     }
   },
 
-  /**
-   * GET /products/analytics/stock-summary
-   * Stock summary grouped by category and type
-   */
+  // get total stock grouped by category
   async stockSummary(req, res) {
     try {
       const results = await Product.aggregate([
